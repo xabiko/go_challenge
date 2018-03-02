@@ -28,7 +28,7 @@ func home(w http.ResponseWriter, r *http.Request) {
 func upload(w http.ResponseWriter, r *http.Request) {
 
 	r.ParseMultipartForm(32 << 20)
-        file, handler, err := r.FormFile("file_to_upload")
+        file, _, _ := r.FormFile("file_to_upload")
 	fmt.Println(file)
 }
 
