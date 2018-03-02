@@ -1,28 +1,40 @@
 package main
+
 import (
+  "html/template"
   "log"
   "fmt"
   "net/http"
   "os"
 )
-func determineListenAddress() (string, error) {
-  port := os.Getenv("PORT")
-  if port == "" {
-    return "", fmt.Errorf("$PORT not set")
-  }
-  return ":" + port, nil
+
+type Jobs struct {
+	People Applicant
 }
-func hello(w http.ResponseWriter, r *http.Request) {
-  fmt.Fprintln(w, "Hello World")
+
+type Applicant struct {
+	Name string
+	Email string
+	Website string
+	Skills []string
+	CoverLetter string
 }
+
+func home(w http.ResponseWriter, r *http.Request) {
+	t, _ := template.ParseFiles("index.html")
+	t.Execute(w, r.URL.Path[1:])
+}
+
+func upload(w http.ResponseWriter, r *http.Request) {
+
+	r.ParseMultipartForm(32 << 20)
+        file, handler, err := r.FormFile("file_to_upload")
+	fmt.Println(file)
+}
+
 func main() {
-  addr, err := determineListenAddress()
-  if err != nil {
-    log.Fatal(err)
-  }
-  http.HandleFunc("/", hello)
-  log.Printf("Listening on %s...\n", addr)
-  if err := http.ListenAndServe(addr, nil); err != nil {
-    panic(err)
-  }
+	http.HandleFunc("/", home)
+	http.HandleFunc("/upload/", upload)
+
+	log.Fatal(http.ListenAndServe(":"+os.Getenv("PORT"), nil))
 }
