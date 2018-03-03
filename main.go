@@ -37,6 +37,9 @@ func upload(w http.ResponseWriter, r *http.Request) {
         }
         defer file.Close()
 	file.Read(data)
+	t, _ := template.ParseFiles("index.html")
+	t.Execute(w, data)
+
 }
 
 func main() {
