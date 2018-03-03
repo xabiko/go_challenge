@@ -8,6 +8,8 @@ import (
   "os"
 )
 
+var data []byte
+
 type Jobs struct {
 	People Applicant
 }
@@ -22,7 +24,7 @@ type Applicant struct {
 
 func home(w http.ResponseWriter, r *http.Request) {
 	t, _ := template.ParseFiles("index.html")
-	t.Execute(w, r.URL.Path[1:])
+	t.Execute(w, data)
 }
 
 func upload(w http.ResponseWriter, r *http.Request) {
@@ -34,7 +36,7 @@ func upload(w http.ResponseWriter, r *http.Request) {
 	   return
         }
         defer file.Close()
-	fmt.Println(file)
+	file.Read(data)
 }
 
 func main() {
