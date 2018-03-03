@@ -57,7 +57,7 @@ func upload(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	http.HandleFunc("/", home)
-	http.HandleFunc("/upload/", upload)
+	http.HandleFunc("/upload", upload)
 
 	log.Fatal(http.ListenAndServe(":"+os.Getenv("PORT"), nil))
 }
