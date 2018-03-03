@@ -11,7 +11,7 @@ import (
   "os"
 )
 
-var data []byte
+//var data []byte
 
 type Jobs struct {
 	People Applicant
@@ -27,7 +27,7 @@ type Applicant struct {
 
 func home(w http.ResponseWriter, r *http.Request) {
 	t, _ := template.ParseFiles("index.html")
-	t.Execute(w, data)
+	t.Execute(w, r)
 }
 
 func upload(w http.ResponseWriter, r *http.Request) {
@@ -52,7 +52,8 @@ func upload(w http.ResponseWriter, r *http.Request) {
 	Buf.Reset()
 	// do something else
 	// etc write header
-	return
+	t, _ := template.ParseFiles("index.html")
+	t.Execute(w, contents)
 }
 
 func main() {
