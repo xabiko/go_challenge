@@ -3,8 +3,6 @@ package main
 import (
   "strconv"
   "encoding/json"
-  //"io"
-  //"bytes"
   "html/template"
   "log"
   "fmt"
@@ -12,8 +10,7 @@ import (
   "os"
 )
 
-//var data []byte
-
+//JSON sample data to Go struct
 type Data struct {
 	Applicants []struct {
 		ID          int    `json:"id"`
@@ -57,7 +54,7 @@ func upload(w http.ResponseWriter, r *http.Request) {
 	panic(err)
 	}
 
-	var total_superstring string
+	var total_superstring string = "<thead><tr><th>Job</th><th>Applicant Name</th><th>Email Address</th><th>Website</th><th>Skills</th><th>Cover Letter Paragraph</th></tr></thead><tbody>"
 
 	for job := range dat.Jobs {
 		var a []string
@@ -74,7 +71,7 @@ func upload(w http.ResponseWriter, r *http.Request) {
 				s = append(s, "<td>"+dat.Skills[ski].Name)
 			}
 
-			desc := "<td rowspan="+strconv.Itoa(app_rowspan)+" class=applicant-name>"+dat.Applicants[app].Name+"</td><td rowspan="+strconv.Itoa(app_rowspan)+"><a href=&#34;mailto:"+dat.Applicants[app].Email+"&#34;>"+dat.Applicants[app].Email+"</a></td><td rowspan="+strconv.Itoa(app_rowspan)+"><a href=&#34;http://"+dat.Applicants[app].Website+"/&#34;>"+dat.Applicants[app].Website+"</a></td>"+s[0]+"<td rowspan="+strconv.Itoa(app_rowspan)+">"+dat.Applicants[app].CoverLetter+"&#34;</td></tr>"
+			desc := "<td rowspan="+strconv.Itoa(app_rowspan)+" class=applicant-name>"+dat.Applicants[app].Name+"</td><td rowspan="+strconv.Itoa(app_rowspan)+"><a href=mailto:"+dat.Applicants[app].Email+">"+dat.Applicants[app].Email+"</a></td><td rowspan="+strconv.Itoa(app_rowspan)+"><a href=http://"+dat.Applicants[app].Website+"/>"+dat.Applicants[app].Website+"</a></td>"+s[0]+"<td rowspan="+strconv.Itoa(app_rowspan)+">"+dat.Applicants[app].CoverLetter+"</td></tr>"
 
 			for i:=1; i<len(s); i++ {desc += "<tr>"+s[i]+"</tr>"}
 			a = append(a, desc)
@@ -83,6 +80,7 @@ func upload(w http.ResponseWriter, r *http.Request) {
 		total_superstring += "<tr><td rowspan="+strconv.Itoa(job_rowspan)+" class=&#34;job-name&#34;>"+dat.Jobs[job].Name+"</td>"+a[0]
 		for i:=1; i<len(a); i++ {total_superstring += "<tr>"+a[i]}
 	}
+	total_superstring += "</tbody>"
 
 	t, _ := template.ParseFiles("index.html")
 	t.Execute(w, template.HTML(total_superstring))
