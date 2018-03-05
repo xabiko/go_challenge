@@ -1,2 +1,4 @@
 .env
 .docker_build/
+.index.html.swp
+.main.go.swp
