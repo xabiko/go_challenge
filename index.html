@@ -2,13 +2,31 @@
 <html>
 <body>
 
+<p>&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;</p>
+
 <form action="/upload" method="POST" enctype="multipart/form-data">
-    Select file to upload:
+    <b>Select JSON to upload:</b>
     <input type="file" name="file_to_upload">
     <input type="submit" value="Upload JSON">
 </form>
 
-<pre>{{.}}</pre>
+<p>&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;&#9778;</p>
+
+<table class="job-applicants">
+	<thead>
+	<tr>
+		<th>Job</th>
+		<th>Applicant Name</th>
+		<th>Email Address</th>
+		<th>Website</th>
+		<th>Skills</th>
+		<th>Cover Letter Paragraph</th>
+	</tr>
+	</thead>
+	<tbody>
+	{{.}}
+	</tbody>
+</table>
 
 </body>
 </html>
