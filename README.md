@@ -1,9 +1,9 @@
 
-# [Code Challenge](https://limitless-chamber-78372.herokuapp.com/)
+# Code Challenge
 
 A barebones Go app, which can easily be deployed to Heroku.
 
-Try it with the sample `data.json`!
+Try it [here](https://limitless-chamber-78372.herokuapp.com/) with the sample `data.json`!
 
 This application supports the [Getting Started with Go on Heroku](https://devcenter.heroku.com/articles/getting-started-with-go) article - check it out.
 
