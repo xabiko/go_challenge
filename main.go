@@ -1,16 +1,15 @@
 package main
 
 import (
-  "strconv"
+  "net/http"
   "encoding/json"
   "html/template"
+  "strconv"
   "log"
-  "fmt"
-  "net/http"
   "os"
 )
 
-//JSON sample data to Go struct
+// JSON sample data to Go struct
 type Data struct {
 	Applicants []struct {
 		ID          int    `json:"id"`
@@ -31,29 +30,33 @@ type Data struct {
 	} `json:"skills"`
 }
 
+// Only handler
 func home(w http.ResponseWriter, r *http.Request) {
-	t, _ := template.ParseFiles("index.html")
-	__welcome := "<b>Upload your JSON</b>"
-	t.Execute(w, template.HTML(__welcome))
-}
 
-func upload(w http.ResponseWriter, r *http.Request) {
+  t, _ := template.ParseFiles("index.html") //Link index.html
 
-	// Create memory buffer
-	//var dat map[string][]interface{}
+  switch r.Method {
+  case "GET":
+	t.Execute(w, template.HTML("Upload your JSON!"))  //Landing page will display initial message
+  case "POST":
+	// In-memory struct
 	dat := Data{}
 	// Read file from request
 	file, _, err := r.FormFile("file_to_upload")
-	if err != nil {
-        panic(err)
+	if file == nil {
+	  t.Execute(w, template.HTML("<pre>Error: No file chosen</pre>"))
+	  return
 	}
 	defer file.Close()
-	// Copy the file data to my buffer
+
+	// Decode JSON into struct 
 	err = json.NewDecoder(file).Decode(&dat)
 	if err != nil {
-	panic(err)
+	  t.Execute(w, template.HTML("<pre>Error: "+err.Error()+"</pre>"))
+	  return
 	}
 
+	// Forging HTML response as a long string
 	var total_superstring string = "<thead><tr><th>Job</th><th>Applicant Name</th><th>Email Address</th><th>Website</th><th>Skills</th><th>Cover Letter Paragraph</th></tr></thead><tbody>"
 
 	for job := range dat.Jobs {
@@ -80,16 +83,26 @@ func upload(w http.ResponseWriter, r *http.Request) {
 		total_superstring += "<tr><td rowspan="+strconv.Itoa(job_rowspan)+" class=&#34;job-name&#34;>"+dat.Jobs[job].Name+"</td>"+a[0]
 		for i:=1; i<len(a); i++ {total_superstring += "<tr>"+a[i]}
 	}
-	total_superstring += "</tbody>"
 
-	t, _ := template.ParseFiles("index.html")
+	unique_skills := []string {dat.Skills[0].Name}  //Custom subsetting of unique values
+	for i := range dat.Skills {
+		l := len(unique_skills)
+		for j:=0; j<l; j++{
+			if dat.Skills[i].Name == unique_skills[j] {break}
+			if j==(l-1) {
+			  unique_skills = append(unique_skills, dat.Skills[i].Name)
+			}
+		}
+	}
+
+	// End of HTML response
+	total_superstring += "</tbody><tfoot><tr><td colspan=6>"+strconv.Itoa(len(dat.Applicants))+" Applicants, "+strconv.Itoa(len(unique_skills))+" Unique Skills</tr></tfoot>"
+
 	t.Execute(w, template.HTML(total_superstring))
+  }
 }
 
 func main() {
-	http.HandleFunc("/", home)
-	http.HandleFunc("/upload", upload)
-
-	fmt.Println("Listening...")
+	http.HandleFunc("/", home) //Only endpoint
 	log.Fatal(http.ListenAndServe(":"+os.Getenv("PORT"), nil))
 }
